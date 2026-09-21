@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Bank Exam Quiz</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f6f9;
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    max-width:1000px;
+    margin:auto;
+}
+
+h1{
+    text-align:center;
+}
+
+/* ========================= */
+/* TIMER AREA */
+/* ========================= */
+
+#timer-container{
+    position:sticky;
+    top:0;
+    z-index:100;
+    background:#f4f6f9;
+    padding-bottom:10px;
+}
+
+#timer{
+    background:#222;
+    color:white;
+    padding:15px;
+    text-align:center;
+    font-size:22px;
+    border-radius:10px;
+    margin-bottom:10px;
+}
+
+.timer-buttons{
+    text-align:center;
+}
+
+#pauseBtn,
+#resumeBtn{
+    padding:10px 20px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+    margin:5px;
+}
+
+#pauseBtn{
+    background:#ff9800;
+    color:white;
+}
+
+#resumeBtn{
+    background:#28a745;
+    color:white;
+}
+
+.question{
+    background:white;
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+.question h3{
+    margin-bottom:15px;
+}
+
+.option{
+    display:block;
+    padding:12px;
+    margin:10px 0;
+    border:1px solid #ccc;
+    border-radius:8px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.option:hover{
+    background:#f0f0f0;
+}
+
+.selected{
+    background:#cfe2ff;
+    border:2px solid #0d6efd;
+}
+
+.mark-btn{
+    margin-top:10px;
+    padding:8px 15px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    background:#ff9800;
+    color:white;
+}
+
+.marked{
+    background:#ffcc80 !important;
+}
+
+.review-marked{
+    background:#e0e0e0 !important;
+    border:2px solid #9e9e9e;
+}
+
+.clear-btn{
+    margin-top:10px;
+    margin-left:10px;
+    padding:8px 15px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    background:#dc3545;
+    color:white;
+}
+
+.submit-btn{
+    width:100%;
+    padding:15px;
+    font-size:20px;
+    border:none;
+    border-radius:10px;
+    background:#28a745;
+    color:white;
+    cursor:pointer;
+    margin-top:20px;
+}
+
+.result-box{
+    background:white;
+    padding:30px;
+    border-radius:12px;
+    text-align:center;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+
+.review-btn{
+    padding:12px 20px;
+    margin-top:20px;
+    border:none;
+    border-radius:10px;
+    background:#007bff;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+}
+
+.review-question{
+    background:white;
+    padding:20px;
+    margin:20px 0;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+.correct{
+    color:green;
+    font-weight:bold;
+}
+
+.wrong{
+    color:red;
+    font-weight:bold;
+}
+
+.unanswered{
+    color:orange;
+    font-weight:bold;
+}
+
+.correct-answer{
+    background:#d4edda;
+    padding:10px;
+    border-radius:8px;
+    margin-top:10px;
+}
+
+.disabled-option{
+    pointer-events:none;
+    opacity:0.6;
+}
+
+.disabled-btn{
+    opacity:0.6;
+    cursor:not-allowed;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Bank Exam MCQ Quiz</h1>
+
+<!-- ========================= -->
+<!-- TIMER -->
+<!-- ========================= -->
+
+<div id="timer-container">
+
+    <div id="timer">
+        Time Left: 20:00
+    </div>
+
+    <div class="timer-buttons">
+
+        <button id="pauseBtn" onclick="pauseTimer()">
+            Pause
+        </button>
+
+        <button id="resumeBtn" onclick="resumeTimer()" disabled>
+            Resume
+        </button>
+
+    </div>
+
+</div>
+
+<div id="quiz"></div>
+
+<button class="submit-btn" onclick="submitQuiz()">
+Submit Quiz
+</button>
+
+</div>
+
+<script>
+
+// ===============================
+// QUESTIONS AREA
+// ===============================
+
+const questions = [
+
+{q:"The PM Vishwakarma Scheme, launched on 17 September 2023, completed three years of implementation in September 2026 and crossed 30 lakh artisan registrations. Which ministry is the nodal ministry for implementing this scheme, which provides end-to-end support to traditional artisans in 18 identified trades?",options:["Ministry of Skill Development & Entrepreneurship (MSDE)","Ministry of Micro, Small & Medium Enterprises (MoMSME)","Ministry of Rural Development (MoRD)","Ministry of Labour & Employment (MoLE)"],answer:1},
+
+{q:"Under the PM Vishwakarma Scheme, traditional artisans receive financial and capacity-building support, including a daily training stipend and a toolkit incentive. Which combination correctly represents these two benefits?",options:["₹500 per day training stipend and ₹15,000 toolkit incentive","₹500 per day training stipend and ₹20,000 toolkit incentive","₹750 per day training stipend and ₹15,000 toolkit incentive","₹750 per day training stipend and ₹20,000 toolkit incentive"],answer:0},
+
+{q:"The PM Vishwakarma Scheme provides collateral-free credit to eligible traditional artisans in two tranches. What is the maximum total credit available under the scheme, along with the beneficiary interest rate mentioned in the given details?",options:["₹2 lakh in two tranches at 6% interest","₹3 lakh in two tranches at 5% interest","₹3 lakh in three tranches at 5% interest","₹5 lakh in two tranches at 6% interest"],answer:1},
+
+{q:"India's combined merchandise and services exports reached USD 399.27 billion during April–August 2026, registering 15.5% growth over the corresponding period. Which ministry released the trade-related data mentioned in this update?",options:["Ministry of Finance (MoF)","Ministry of External Affairs (MEA)","Ministry of Commerce & Industry (MoC&I)","Ministry of Corporate Affairs (MCA)"],answer:2},
+
+{q:"During April–August 2026, India's merchandise exports stood at USD 215.91 billion, compared with USD 183.21 billion during the corresponding period of the previous year. Based on the given data, which statement is correct?",options:["Merchandise exports declined by around USD 32.70 billion","Merchandise exports increased by around USD 32.70 billion","Merchandise exports increased by around USD 25.41 billion","Merchandise exports declined by around USD 18.01 billion"],answer:1},
+
+{q:"The Kishau Multipurpose Project is a major inter-state project intended to support water storage, irrigation and power-related benefits, besides contributing to Yamuna rejuvenation. Which river will the 232.6-metre concrete gravity dam be constructed across?",options:["Yamuna River","Sutlej River","Tons River","Beas River"],answer:2},
+
+{q:"Six states signed an agreement on 15 September 2026 to advance the Kishau Multipurpose Project, based on the 1994 Upper Yamuna Basin MoU. Which of the following is NOT one of the six participating states/UTs mentioned in the agreement?",options:["Haryana","Rajasthan","Punjab","Uttarakhand"],answer:2},
+
+{q:"The Kishau Multipurpose Project is proposed as a National Project with a specified cost-sharing arrangement between the Union Government and participating states. What is the correct funding pattern mentioned for the project?",options:["Centre 75% and states 25%","Centre 80% and states 20%","Centre 90% and states 10%","Centre 60% and states 40%"],answer:2},
+
+{q:"The Government of India reconstituted the Central Board of Film Certification (CBFC) with 18 members for a period of three years. Under which legislation and certification rules does the CBFC function according to the given update?",options:["Cinematograph Act, 1952 and Cinematograph (Certification) Rules, 2024","Cinematography Act, 1952 and Film Certification Rules, 2023","Cinematograph Act, 1961 and Cinematograph Rules, 2024","Cinematograph Act, 1952 and Central Film Rules, 2025"],answer:0},
+
+{q:"The Central Board of Film Certification (CBFC) is responsible for examination and certification of films intended for public exhibition. Who has been mentioned as the Chairperson of the reconstituted CBFC in the given update?",options:["Prasoon Joshi","Shashi Shekhar Vempati","Sanjay Jaju","Rajendra Singh"],answer:1},
+
+{q:"NIELIT and Infineon Technologies inaugurated a Centre of Excellence (CoE) at NIELIT Ahmedabad to strengthen semiconductor manufacturing-related training and capacity building. What was the specific contribution made by Infineon Technologies to this CoE?",options:["Five industry-grade semiconductor equipment units","Six industry-grade semiconductor equipment units","Eight industry-grade semiconductor equipment units","Ten industry-grade semiconductor equipment units"],answer:2},
+
+{q:"The NIELIT–Infineon Centre of Excellence in Gujarat focuses on capacity building in semiconductor manufacturing, including ATMP and OSAT. What do these two abbreviations respectively stand for?",options:["Advanced Testing, Manufacturing & Processing; Outsourced Semiconductor Assembly & Technology","Assembly, Testing, Marking & Packaging; Outsourced Semiconductor Assembly & Test","Automated Testing, Marking & Production; Overseas Semiconductor Assembly & Technology","Assembly, Technology, Manufacturing & Processing; Outsourced Semiconductor Analysis & Testing"],answer:1},
+
+{q:"The Central Industrial Security Force (CISF) signed two MoUs with IIT Kanpur to strengthen cybersecurity and anti-drone capabilities. Under the cybersecurity framework, C3iHub will provide residential training to CISF personnel. What is the duration of each training programme and the batch size mentioned?",options:["4-week training for 30 personnel","6-week training for 40 personnel","8-week training for 40 personnel","6-week training for 60 personnel"],answer:1},
+
+{q:"Under the anti-drone cooperation between CISF and IIT Kanpur, a Centre of Excellence is proposed at MPRTC Behror, Rajasthan. Which of the following areas is specifically associated with this cooperation?",options:["Satellite navigation and space debris monitoring","UAV, counter-drone systems, drone forensics and RF/micro-Doppler detection","Marine surveillance and underwater robotics","Cyber banking fraud detection and digital payments"],answer:1},
+
+{q:"The Ministry of Electronics & Information Technology (MeitY) granted in-principle approval for an Artificial Intelligence Centre of Excellence in Bhubaneswar under the IndiaAI Mission. Which organisation will implement this AI-CoE?",options:["Centre for Development of Advanced Computing (C-DAC)","Software Technology Parks of India (STPI)","National Informatics Centre (NIC)","National Institute of Electronics & Information Technology (NIELIT)"],answer:1},
+
+{q:"The proposed AI Centre of Excellence in Bhubaneswar will focus on areas such as healthcare, governance, disaster management, education and the coastal/marine economy. Which organisation is identified as the industry partner contributing ₹4 crore to the project?",options:["Tata Elxsi","Blue Cloud Softech Solutions","HCL Technologies","Tech Mahindra"],answer:1},
+
+{q:"Bharat Heavy Electricals Limited (BHEL) and Titagarh Rail Systems Limited signed a pact to form a 50:50 joint venture for maintaining Vande Bharat Sleeper trainsets. For how long will the proposed JV undertake maintenance of the 80 trainsets?",options:["20 years","25 years","30 years","35 years"],answer:3},
+
+{q:"BHEL and Titagarh Rail Systems Limited (TRSL) agreed to establish a 50:50 joint venture for maintenance of Vande Bharat Sleeper trainsets. Which statement correctly describes the proposed joint venture?",options:["A 60:40 JV with initial paid-up capital of ₹1 crore and headquarters in Mumbai","A 50:50 JV with initial paid-up capital of ₹50 lakh and headquarters in New Delhi","A 51:49 JV with initial paid-up capital of ₹50 lakh and headquarters in Chennai","A 50:50 JV with initial paid-up capital of ₹1 crore and headquarters in Kolkata"],answer:1},
+
+{q:"The World Economic Forum (WEF) released the 20th edition of the Global Gender Gap Report in 2026. India was ranked 131st among 145 countries with a score of 0.645. Which country retained the top position for the 17th consecutive year?",options:["Finland","Norway","Iceland","Sweden"],answer:2},
+
+{q:"The World Economic Forum's Global Gender Gap Report 2026 measures gender disparities across four major dimensions. Which of the following correctly lists all four dimensions used in the index?",options:["Economic Participation & Opportunity, Educational Attainment, Health & Survival, Political Empowerment","Economic Growth, Literacy, Healthcare Access, Political Representation","Employment, Education Quality, Life Expectancy, Governance","Income Equality, School Enrolment, Public Health, Electoral Participation"],answer:0},
+
+{q:"Bharat Forge and Pratt & Whitney Canada, a company of RTX, collaborated to evaluate the integration of an advanced turboprop engine into a Defence Research and Development Organisation (DRDO) High-Altitude Long-Endurance (HALE) Unmanned Aerial Vehicle (UAV). What is the respective role of the two companies in this collaboration?",options:["Bharat Forge will assess engine compatibility, while Pratt & Whitney Canada will handle engine-airframe integration","Pratt & Whitney Canada will assess engine compatibility, while Bharat Forge will handle engine-airframe integration","Bharat Forge will develop the UAV platform, while Pratt & Whitney Canada will provide satellite communication systems","Pratt & Whitney Canada will manufacture the complete UAV, while Bharat Forge will conduct surveillance operations"],answer:1},
+
+{q:"The collaboration between Bharat Forge and Pratt & Whitney Canada aims to support a DRDO High-Altitude Long-Endurance (HALE) Unmanned Aerial Vehicle (UAV) designed for prolonged operations at high altitude. Which of the following best describes its intended operational purpose?",options:["Long-duration surveillance, intelligence and reconnaissance missions","Short-range passenger transport and commercial aviation operations","Underwater surveillance, mine detection and naval rescue missions","Low-altitude agricultural monitoring and civilian crop management"],answer:0},
+
+{q:"Veteran Kannada actor Anant Nag was selected for the Dadasaheb Phalke Award 2024 for his contribution to Indian cinema, with the honour being presented during the 72nd National Film Awards ceremony in September 2026. What distinction did he achieve through this award?",options:["He became the first Kannada artist to receive the National Film Award","He became the second Kannada cinema artist to receive the Dadasaheb Phalke Award after Rajkumar","He became the first actor to receive both the Padma Bhushan and Dadasaheb Phalke Award in the same year","He became the first South Indian recipient of the Dadasaheb Phalke Award"],answer:1},
+
+{q:"The Dadasaheb Phalke Award, conferred on Anant Nag for his contribution to Indian cinema, is regarded as India's highest cinema honour. In which year was this award instituted by the Government of India?",options:["1954","1961","1969","1975"],answer:2},
+
+{q:"Dileep Sanghani, Chairman of Indian Farmers Fertiliser Cooperative Limited (IFFCO), was elected as an At-Large Director to the International Cooperative Alliance (ICA) Global Board for the 2026–2030 term at its General Assembly in Panama City. How many At-Large Directors were elected from the 24 candidates?",options:["10","12","15","18"],answer:2},
+
+{q:"The International Cooperative Alliance (ICA), the global apex body representing cooperatives, elected its Global Board for 2026–2030. Who was re-elected unopposed as the President of ICA according to the given details?",options:["Dileep Sanghani of India","Dr Ariel Guarco of Argentina","Rajkumar of India","Vinai Kumar Saxena of India"],answer:1},
+
+{q:"IPS officer Sanjukta Parashar became the first woman Inspector General (IG) of the Central Reserve Police Force (CRPF) Commando Battalion for Resolute Action (CoBRA). Which officer did she succeed in this position?",options:["Danesh Rana, 1996-batch IPS officer of AGMUT cadre","Ariel Guarco, 1996-batch IPS officer of AGMUT cadre","Jitin Prasada, 2006-batch IPS officer of Assam-Meghalaya cadre","Rajendra Kumar, 2006-batch IPS officer of AGMUT cadre"],answer:0},
+
+{q:"Sanjukta Parashar, a 2006-batch IPS officer of the Assam-Meghalaya cadre, became the first woman IG of CRPF's CoBRA unit. The CoBRA force is specifically known for which type of operations?",options:["Maritime security and coastal anti-piracy operations","Guerrilla warfare, jungle operations and anti-insurgency operations","Air traffic control and airport passenger screening","Border trade management and customs enforcement"],answer:1},
+
+{q:"NASA confirmed the existence of a massive crater on the Moon formed by an impact in May 2024, using imagery from the Lunar Reconnaissance Orbiter (LRO). What is the diameter and depth of the newly identified McGetchin crater?",options:["122 metres in diameter and 24 metres deep","182 metres in diameter and 34 metres deep","222 metres in diameter and 43 metres deep","322 metres in diameter and 53 metres deep"],answer:2},
+
+{q:"The newly identified lunar crater was named McGetchin in honour of Thomas McGetchin. Which organisation was Thomas McGetchin associated with as a former Director?",options:["Jet Propulsion Laboratory","Lunar and Planetary Institute","National Radio Astronomy Observatory","European Space Agency"],answer:1},
+
+{q:"Two new frog species, Ingerana aizawl and Duttaphrynus phawngpui, were discovered in Mizoram and reported in the international zoological taxonomy journal Zootaxa. Which pairing correctly identifies the naming basis of these two species?",options:["Ingerana aizawl was named after Phawngpui, while Duttaphrynus phawngpui was named after Aizawl","Both species were named after two rivers of Mizoram","Ingerana aizawl was named after Aizawl, while Duttaphrynus phawngpui was named after Phawngpui","Ingerana aizawl was named after Mizoram's highest mountain, while Duttaphrynus phawngpui was named after its capital"],answer:2},
+
+{q:"The frog Ingerana aizawl was earlier identified as Ingerana borealis, but genetic and morphological studies established that it is a distinct species. Where was Ingerana aizawl specifically found according to the discovery details?",options:["Phawngpui National Park in Lawngtlai","Hratdawng Stream near Mizoram University in Aizawl","Dampa Tiger Reserve near Mamit","Blue Mountain region near Lunglei"],answer:1},
+
+{q:"The United Nations observed the International Day of Science, Technology and Innovation for the South on 16 September 2026 for the third time. Which organisation/group originally designated this observance at the Havana Summit in 2023?",options:["G7 and European Union","G20 and BRICS","G77 and China","SAARC and ASEAN"],answer:2},
+
+{q:"The International Day of Science, Technology and Innovation (STI) for the South was recognised by the United Nations General Assembly through Resolution A/RES/78/259. On which date was this resolution adopted?",options:["16 September 2023","2 September 2022","9 January 2024","16 September 2024"],answer:2},
+
+{q:"The United Nations observed the fourth International Day for Interventional Cardiology on 16 September 2026 to raise awareness about cardiovascular diseases and interventional cardiology. Which UN General Assembly resolution established this observance?",options:["A/RES/78/259","A/RES/76/302","A/RES/75/301","A/RES/77/302"],answer:1},
+
+{q:"The International Day for Interventional Cardiology commemorates an important development in cardiac medicine. Who performed the first coronary angioplasty in 1977 at University Hospital Zürich, Switzerland?",options:["Dr Andreas Roland Grüntzig","Dr Thomas McGetchin","Dr Ariel Guarco","Dr Rajkumar"],answer:0},
+
+{q:"During the 11th Ladakh Zanskar Festival held on 15–16 September 2026, Ladakh Lieutenant Governor Vinai Kumar Saxena declared Kumik as Ladakh's first Heritage Village. In which region and district is Kumik located?",options:["Nubra region, Leh district","Zanskar region, Kargil district","Changthang region, Leh district","Sham region, Kargil district"],answer:1},
+
+{q:"Kumik was declared Ladakh's first Heritage Village because of its traditional mud architecture, Buddhist manuscripts, sacred spaces, agriculture and community customs, including rare Kanjur manuscripts. What is the main objective behind this heritage designation?",options:["To develop Kumik exclusively as a commercial industrial zone","To promote heritage tourism while preserving living heritage","To establish Kumik as the administrative capital of Ladakh","To convert the village into a modern semiconductor manufacturing hub"],answer:1},
+
+{q:"The declaration of Kumik as Ladakh's first Heritage Village was associated with the vision 'Vikas Bhi, Virasat Bhi', emphasising development along with preservation of cultural heritage. Which festival provided the occasion for this declaration?",options:["Hemis Festival","Losar Festival","Ladakh Zanskar Festival","Sindhu Darshan Festival"],answer:2},
+];
+
+
+
+// ===============================
+// VARIABLES
+// ===============================
+
+let userAnswers = new Array(questions.length).fill(null);
+
+let markedForReview = new Array(questions.length).fill(false);
+
+let submitted = false;
+
+// ===============================
+// LOAD QUIZ
+// ===============================
+
+function loadQuiz(){
+
+    const quizDiv = document.getElementById("quiz");
+
+    questions.forEach((question,index)=>{
+
+        const qDiv = document.createElement("div");
+
+        qDiv.classList.add("question");
+
+        qDiv.id = `question_${index}`;
+
+        qDiv.innerHTML = `
+        <h3>Q${index+1}. ${question.q}</h3>
+        `;
+
+        question.options.forEach((option,optIndex)=>{
+
+            const opt = document.createElement("div");
+
+            opt.classList.add("option");
+
+            opt.innerText = option;
+
+            opt.onclick = ()=>selectOption(index,optIndex,opt);
+
+            opt.id = `q${index}_opt${optIndex}`;
+
+            qDiv.appendChild(opt);
+
+        });
+
+        // MARK BUTTON
+
+        const markBtn = document.createElement("button");
+
+        markBtn.innerText = "Mark For Review";
+
+        markBtn.classList.add("mark-btn");
+
+        markBtn.onclick = ()=>toggleMark(index,markBtn);
+
+        qDiv.appendChild(markBtn);
+
+        // CLEAR BUTTON
+
+        const clearBtn = document.createElement("button");
+
+        clearBtn.innerText = "Clear";
+
+        clearBtn.classList.add("clear-btn");
+
+        clearBtn.onclick = ()=>clearAnswer(index);
+
+        qDiv.appendChild(clearBtn);
+
+        quizDiv.appendChild(qDiv);
+
+    });
+
+}
+
+// ===============================
+// SELECT OPTION
+// ===============================
+
+function selectOption(qIndex,optIndex,element){
+
+    if(submitted) return;
+
+    userAnswers[qIndex] = optIndex;
+
+    const options = document.querySelectorAll(`[id^="q${qIndex}_opt"]`);
+
+    options.forEach(opt=>{
+        opt.classList.remove("selected");
+    });
+
+    element.classList.add("selected");
+
+}
+
+// ===============================
+// MARK FOR REVIEW
+// ===============================
+
+function toggleMark(index,button){
+
+    markedForReview[index] = !markedForReview[index];
+
+    const questionBox = document.getElementById(`question_${index}`);
+
+    if(markedForReview[index]){
+
+        button.classList.add("marked");
+
+        button.innerText = "Marked For Review";
+
+        questionBox.classList.add("review-marked");
+
+    }else{
+
+        button.classList.remove("marked");
+
+        button.innerText = "Mark For Review";
+
+        questionBox.classList.remove("review-marked");
+
+    }
+
+}
+
+// ===============================
+// CLEAR ANSWER
+// ===============================
+
+function clearAnswer(index){
+
+    if(submitted) return;
+
+    userAnswers[index] = null;
+
+    const options = document.querySelectorAll(`[id^="q${index}_opt"]`);
+
+    options.forEach(opt=>{
+        opt.classList.remove("selected");
+    });
+
+}
+
+// ===============================
+// SUBMIT QUIZ
+// ===============================
+
+function submitQuiz(){
+
+    if(submitted) return;
+
+    submitted = true;
+
+    clearInterval(timer);
+
+    let score = 0;
+
+    let correctCount = 0;
+    let wrongCount = 0;
+    let unansweredCount = 0;
+
+    questions.forEach((question,index)=>{
+
+        const userAns = userAnswers[index];
+
+        if(userAns === null){
+
+            unansweredCount++;
+
+        }
+        else if(userAns === question.answer){
+
+            score += 1;
+            correctCount++;
+
+        }
+        else{
+
+            score -= 0.25;
+            wrongCount++;
+
+        }
+
+    });
+
+    let attempted = correctCount + wrongCount;
+
+    let accuracy = attempted > 0
+    ? ((correctCount/attempted)*100).toFixed(2)
+    : 0;
+
+    document.body.innerHTML = `
+
+    <div class="container">
+
+        <div class="result-box">
+
+            <h1>Quiz Submitted ✅</h1>
+
+            <h2>Total Score: ${score.toFixed(2)}</h2>
+
+            <h3>Correct Answers: ${correctCount}</h3>
+
+            <h3>Wrong Answers: ${wrongCount}</h3>
+
+            <h3>Unanswered Questions: ${unansweredCount}</h3>
+
+            <h3>Accuracy: ${accuracy}%</h3>
+
+            <button class="review-btn" onclick="reviewAnswers()">
+            Review Answers
+            </button>
+
+            <div id="reviewSection"></div>
+
+        </div>
+
+    </div>
+
+    `;
+
+}
+
+// ===============================
+// REVIEW ANSWERS
+// ===============================
+
+function reviewAnswers(){
+
+    const reviewSection = document.getElementById("reviewSection");
+
+    let html = `<h1 style="margin-top:40px;">Review Section</h1>`;
+
+    questions.forEach((question,index)=>{
+
+        const userAns = userAnswers[index];
+
+        let status = "";
+        let marks = "";
+
+        if(userAns === null){
+
+            status = `<span class="unanswered">Unanswered</span>`;
+            marks = `0 Marks`;
+
+        }
+        else if(userAns === question.answer){
+
+            status = `<span class="correct">Correct ✅</span>`;
+            marks = `+1 Mark`;
+
+        }
+        else{
+
+            status = `<span class="wrong">Wrong ❌</span>`;
+            marks = `-0.25 Mark`;
+
+        }
+
+        html += `
+
+        <div class="review-question">
+
+            <h3>Q${index+1}. ${question.q}</h3>
+
+            <p>${status}</p>
+
+            <p><b>Marks:</b> ${marks}</p>
+
+            <p>
+            <b>Your Answer:</b>
+            ${
+                userAns === null
+                ? "Not Attempted"
+                : question.options[userAns]
+            }
+            </p>
+
+            <div class="correct-answer">
+            <b>Correct Answer:</b>
+            ${question.options[question.answer]}
+            </div>
+
+        </div>
+
+        `;
+
+    });
+
+    reviewSection.innerHTML = html;
+
+}
+
+// ===============================
+// TIMER
+// ===============================
+
+let time = 1800;
+
+let timer;
+
+let isPaused = false;
+
+function startTimer(){
+
+    timer = setInterval(()=>{
+
+        if(!isPaused){
+
+            let minutes = Math.floor(time/60);
+
+            let seconds = time%60;
+
+            document.getElementById("timer").innerText =
+            `Time Left: ${minutes}:${seconds < 10 ? '0'+seconds : seconds}`;
+
+            time--;
+
+            if(time < 0){
+
+                clearInterval(timer);
+
+                alert("Time is up! Quiz auto-submitted.");
+
+                submitQuiz();
+
+            }
+
+        }
+
+    },1000);
+
+}
+
+// ===============================
+// PAUSE TIMER
+// ===============================
+
+function pauseTimer(){
+
+    if(submitted) return;
+
+    isPaused = true;
+
+    document.getElementById("pauseBtn").disabled = true;
+
+    document.getElementById("resumeBtn").disabled = false;
+
+    // Disable options
+    document.querySelectorAll(".option").forEach(opt=>{
+        opt.classList.add("disabled-option");
+    });
+
+    // Disable buttons
+    document.querySelectorAll(".mark-btn, .clear-btn").forEach(btn=>{
+        btn.disabled = true;
+        btn.classList.add("disabled-btn");
+    });
+
+}
+// ===============================
+// RESUME TIMER
+// ===============================
+
+function resumeTimer(){
+
+    if(submitted) return;
+
+    isPaused = false;
+
+    document.getElementById("pauseBtn").disabled = false;
+
+    document.getElementById("resumeBtn").disabled = true;
+
+    // Enable options
+    document.querySelectorAll(".option").forEach(opt=>{
+        opt.classList.remove("disabled-option");
+    });
+
+    // Enable buttons
+    document.querySelectorAll(".mark-btn, .clear-btn").forEach(btn=>{
+        btn.disabled = false;
+        btn.classList.remove("disabled-btn");
+    });
+
+}
+// ===============================
+
+loadQuiz();
+
+startTimer();
+
+</script>
+
+</body>
+</html>
